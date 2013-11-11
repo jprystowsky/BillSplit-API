@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.mapping.api.billsplit.resource;
+package io.mapping.api.billsplit.oauth2;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;

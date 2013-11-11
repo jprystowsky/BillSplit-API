@@ -10,6 +10,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import io.mapping.api.billsplit.exceptions.NoTokenException;
 import io.mapping.api.billsplit.models.User;
+import io.mapping.api.billsplit.oauth2.OAuth2Helper;
 import io.mapping.api.billsplit.session.SessionAttributes;
 import io.mapping.api.billsplit.settings.SettingsReader;
 

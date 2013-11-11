@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.mapping.api.billsplit.resource;
+package io.mapping.api.billsplit.oauth2;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
@@ -25,7 +25,6 @@ import com.google.api.services.oauth2.Oauth2;
 import com.google.api.services.oauth2.model.Tokeninfo;
 import com.google.inject.Inject;
 import io.mapping.api.billsplit.exceptions.GenericOAuthTokenErrorException;
-import io.mapping.api.billsplit.oauth2.StateGenerator;
 import io.mapping.api.billsplit.session.SessionAttributes;
 
 import javax.servlet.http.HttpServletRequest;

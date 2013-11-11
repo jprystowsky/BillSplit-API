@@ -24,6 +24,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import io.mapping.api.billsplit.exceptions.InvalidOAuthStateException;
 import io.mapping.api.billsplit.exceptions.NullOAuthCodeException;
+import io.mapping.api.billsplit.oauth2.OAuth2Helper;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
