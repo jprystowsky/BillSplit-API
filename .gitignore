@@ -1,0 +1,11 @@
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# Application-specific
+settings.json
+google_oauth.json
+.idea
