@@ -56,11 +56,9 @@ public class BillSplitServletModule extends ServletModule {
 		/**
 		 * Bind resources (i.e., backings to RESTful endpoints)
 		 */
-
-		bind(HelloResource.class);
 		bind(GoogleTokenResource.class);
-		bind(UserResource.class);
 		bind(AuthResource.class);
+		bind(UserResource.class);
 
 		/**
 		 * Perform dependency injection (DI)

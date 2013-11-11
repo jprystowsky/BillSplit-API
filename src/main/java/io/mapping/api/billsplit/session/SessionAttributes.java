@@ -16,6 +16,9 @@
 
 package io.mapping.api.billsplit.session;
 
+/**
+ * A big bag of strings, used for consistency in {@link javax.servlet.http.HttpSession} access.
+ */
 public class SessionAttributes {
 	private static final String PREFIX = "io.mapping.api.billsplit.session.";
 
