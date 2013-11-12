@@ -9,7 +9,7 @@ import com.google.api.services.plus.model.Person;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import io.mapping.api.billsplit.exceptions.NoTokenException;
-import io.mapping.api.billsplit.models.User;
+import io.mapping.api.billsplit.entities.UserEntity;
 import io.mapping.api.billsplit.oauth2.OAuth2Helper;
 import io.mapping.api.billsplit.session.SessionAttributes;
 import io.mapping.api.billsplit.settings.SettingsReader;
@@ -43,15 +43,15 @@ public class UserResource {
 	@Path("me")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public User getMe(@Context HttpServletRequest request) throws IOException {
-		return (User) request.getSession().getAttribute(SessionAttributes.USER);
+	public UserEntity getMe(@Context HttpServletRequest request) throws IOException {
+		return (UserEntity) request.getSession().getAttribute(SessionAttributes.USER);
 	}
 
 	@POST
 	@Path("me")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public User createMe(@Context HttpServletRequest request) throws IOException {
+	public UserEntity createMe(@Context HttpServletRequest request) throws IOException {
 		String token = mOAuth2Helper.getToken(request);
 
 		if (token != null) {
@@ -73,7 +73,7 @@ public class UserResource {
 			EntityTransaction transaction = mEntityManager.getTransaction();
 			transaction.begin();
 
-			User user = new User
+			UserEntity userEntity = new UserEntity
 					.Builder()
 					.googleId(googleId)
 					.email(email)
@@ -81,12 +81,12 @@ public class UserResource {
 					.lastName(person.getName().getFamilyName())
 					.build();
 
-			mEntityManager.persist(user);
+			mEntityManager.persist(userEntity);
 
 			transaction.commit();
 
 			// Return fresh to ensure it saved and to get 100% consistent values (e.g., id)
-			return (User) mEntityManager
+			return (UserEntity) mEntityManager
 					.createNamedQuery("user.findByGoogleId")
 					.setParameter("googleId", googleId)
 					.getSingleResult();

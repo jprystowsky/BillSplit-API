@@ -21,7 +21,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import io.mapping.api.billsplit.exceptions.NoTokenException;
-import io.mapping.api.billsplit.models.User;
+import io.mapping.api.billsplit.entities.UserEntity;
 import io.mapping.api.billsplit.oauth2.OAuth2Helper;
 import io.mapping.api.billsplit.session.SessionAttributes;
 
@@ -56,10 +56,10 @@ public class AuthResource {
 	@Path("/login")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public User login() throws IOException {
-		User user = getSessionUser(mRequest);
-		if (user != null) {
-			return user;
+	public UserEntity login() throws IOException {
+		UserEntity userEntity = getSessionUser(mRequest);
+		if (userEntity != null) {
+			return userEntity;
 		}
 
 		String token = mOAuth2Helper.getToken(mRequest);
@@ -73,30 +73,30 @@ public class AuthResource {
 			String googleId = tokenResponse.parseIdToken().getPayload().getSubject();
 
 			try {
-				user = (User) mEntityManager
+				userEntity = (UserEntity) mEntityManager
 						.createNamedQuery("user.findByGoogleId")
 						.setParameter("googleId", googleId)
 						.getSingleResult();
 			} catch (NoResultException ex) {
-				// User does not yet exist
-				user = mUserResource.createMe(mRequest);
+				// UserEntity does not yet exist
+				userEntity = mUserResource.createMe(mRequest);
 			}
 
-			setUserInSession(user);
+			setUserInSession(userEntity);
 
-			return user;
+			return userEntity;
 		} else {
 			// Shouldn't be calling login if we don't already have a token
 			return null;
 		}
 	}
 
-	private void setUserInSession(User user) {
-		mRequest.getSession().setAttribute(SessionAttributes.USER, user);
+	private void setUserInSession(UserEntity userEntity) {
+		mRequest.getSession().setAttribute(SessionAttributes.USER, userEntity);
 	}
 
-	private User getSessionUser(HttpServletRequest request) {
-		return (User) request.getSession().getAttribute(SessionAttributes.USER);
+	private UserEntity getSessionUser(HttpServletRequest request) {
+		return (UserEntity) request.getSession().getAttribute(SessionAttributes.USER);
 	}
 
 	@DELETE
