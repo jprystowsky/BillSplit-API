@@ -1,31 +1,34 @@
 package io.mapping.api.billsplit.models;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
+import java.util.UUID;
 
 @Entity
-@Table(name = "\"user\"")
 @NamedQueries({
 		@NamedQuery(name = "user.findById", query = "from UserEntity where id = :id"),
 		@NamedQuery(name = "user.findByGoogleId", query = "from UserEntity where googleId = :googleId")
 })
 public class UserEntity {
-	private long mId;
+	private UUID mId;
 	private String mGoogleId;
 	private String mEmail;
 	private String mFirstName;
 	private String mLastName;
 
 	@Id
-	@SequenceGenerator(name = "user_id_seq", sequenceName = "user_id_seq")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "user_id_seq")
-	public long getId() {
+	@GeneratedValue(generator = "uuid")
+	@GenericGenerator(name = "uuid", strategy = "uuid2")
+	@Column(unique = true)
+	public UUID getId() {
 		return mId;
 	}
-	public void setId(long id) {
+	public void setId(UUID id) {
 		mId = id;
 	}
 
-	@Column(name = "google_id")
+	@Column(nullable = false)
 	public String getGoogleId() {
 		return mGoogleId;
 	}
@@ -33,7 +36,7 @@ public class UserEntity {
 		mGoogleId = googleId;
 	}
 
-	@Column
+	@Column(nullable = false)
 	public String getEmail() {
 		return mEmail;
 	}
@@ -41,7 +44,7 @@ public class UserEntity {
 		mEmail = email;
 	}
 
-	@Column(name = "first_name")
+	@Column(nullable = false)
 	public String getFirstName() {
 		return mFirstName;
 	}
@@ -49,7 +52,7 @@ public class UserEntity {
 		mFirstName = firstName;
 	}
 
-	@Column(name = "last_name")
+	@Column(nullable = false)
 	public String getLastName() {
 		return mLastName;
 	}
