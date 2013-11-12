@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package io.mapping.api.billsplit.sessions;
+package io.mapping.api.billsplit.reflection;
 
-public interface SessionAttributes {
-	public static enum Attribute {
-		STATE, TOKEN, USER
+public class AutoPackageNameProviderAlgorithm implements PackageNameProviderAlgorithm {
+	@Override
+	public String determinePackageName(Class clazz) {
+		return clazz.getPackage().getName();
 	}
-
-	public String getAttribute(Attribute attribute);
 }

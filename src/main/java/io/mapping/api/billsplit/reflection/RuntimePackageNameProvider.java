@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
-package io.mapping.api.billsplit.sessions;
+package io.mapping.api.billsplit.reflection;
 
-public interface SessionAttributes {
-	public static enum Attribute {
-		STATE, TOKEN, USER
+import com.google.inject.Inject;
+
+public class RuntimePackageNameProvider implements PackageNameProvider {
+	@Inject
+	PackageNameProviderAlgorithm mPackageNameProviderAlgorithm;
+
+	@Override
+	public String getPackageName(Class clazz) {
+		return mPackageNameProviderAlgorithm.determinePackageName(clazz);
 	}
-
-	public String getAttribute(Attribute attribute);
 }

@@ -36,22 +36,27 @@ public class GoogleOAuth2Helper implements OAuth2Helper {
 
 	@Inject
 	private HttpTransport mHttpTransport;
+
 	@Inject
 	private JacksonFactory mJacksonFactory;
+
 	@Inject
 	private GoogleClientSecrets mGoogleClientSecrets;
 
 	@Inject
-	StateGenerator mStateGenerator;
+	private StateGenerator mStateGenerator;
+
+	@Inject
+	private SessionAttributes mSessionAttributes;
 
 	@Override
 	public String getState(HttpServletRequest request) {
-		return (String) request.getSession().getAttribute(SessionAttributes.STATE);
+		return (String) request.getSession().getAttribute(mSessionAttributes.getAttribute(SessionAttributes.Attribute.STATE));
 	}
 
 	@Override
 	public void setState(HttpServletRequest request, String state) {
-		request.getSession().setAttribute(SessionAttributes.STATE, state);
+		request.getSession().setAttribute(mSessionAttributes.getAttribute(SessionAttributes.Attribute.STATE), state);
 	}
 
 	@Override
@@ -61,27 +66,27 @@ public class GoogleOAuth2Helper implements OAuth2Helper {
 
 	@Override
 	public void removeState(HttpServletRequest request) {
-		request.getSession().removeAttribute(SessionAttributes.STATE);
+		request.getSession().removeAttribute(mSessionAttributes.getAttribute(SessionAttributes.Attribute.STATE));
 	}
 
 	@Override
 	public boolean checkState(HttpServletRequest request, HttpServletResponse response) {
-		return request.getSession().getAttribute(SessionAttributes.STATE).equals(request.getSession().getAttribute(SessionAttributes.STATE));
+		return request.getSession().getAttribute(mSessionAttributes.getAttribute(SessionAttributes.Attribute.STATE)).equals(request.getSession().getAttribute(mSessionAttributes.getAttribute(SessionAttributes.Attribute.STATE)));
 	}
 
 	@Override
 	public String getToken(HttpServletRequest request) {
-		return (String) request.getSession().getAttribute(SessionAttributes.TOKEN);
+		return (String) request.getSession().getAttribute(mSessionAttributes.getAttribute(SessionAttributes.Attribute.TOKEN));
 	}
 
 	@Override
 	public void setToken(HttpServletRequest request, String token) {
-		request.getSession().setAttribute(SessionAttributes.TOKEN, token);
+		request.getSession().setAttribute(mSessionAttributes.getAttribute(SessionAttributes.Attribute.TOKEN), token);
 	}
 
 	@Override
 	public void removeToken(HttpServletRequest request) {
-		request.getSession().removeAttribute(SessionAttributes.TOKEN);
+		request.getSession().removeAttribute(mSessionAttributes.getAttribute(SessionAttributes.Attribute.TOKEN));
 	}
 
 	@Override

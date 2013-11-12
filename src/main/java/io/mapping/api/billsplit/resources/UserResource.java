@@ -8,8 +8,8 @@ import com.google.api.services.plus.Plus;
 import com.google.api.services.plus.model.Person;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import io.mapping.api.billsplit.exceptions.NoTokenException;
 import io.mapping.api.billsplit.entities.UserEntity;
+import io.mapping.api.billsplit.exceptions.NoTokenException;
 import io.mapping.api.billsplit.oauth2.OAuth2Helper;
 import io.mapping.api.billsplit.sessions.SessionAttributes;
 import io.mapping.api.billsplit.settings.SettingsReader;
@@ -33,18 +33,22 @@ public class UserResource {
 
 	@Inject
 	private HttpTransport mHttpTransport;
+
 	@Inject
 	private JacksonFactory mJacksonFactory;
 
 	@Inject
 	private SettingsReader mSettingsReader;
 
+	@Inject
+	private SessionAttributes mSessionAttributes;
+
 	@GET
 	@Path("me")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public UserEntity getMe(@Context HttpServletRequest request) throws IOException {
-		return (UserEntity) request.getSession().getAttribute(SessionAttributes.USER);
+		return (UserEntity) request.getSession().getAttribute(mSessionAttributes.getAttribute(SessionAttributes.Attribute.USER));
 	}
 
 	@POST

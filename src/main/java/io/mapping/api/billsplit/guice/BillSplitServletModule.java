@@ -26,8 +26,19 @@ import com.google.inject.Scopes;
 import com.google.inject.Singleton;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
-import io.mapping.api.billsplit.oauth2.*;
-import io.mapping.api.billsplit.resources.*;
+import io.mapping.api.billsplit.oauth2.BigIntegerStateGenerator;
+import io.mapping.api.billsplit.oauth2.GoogleOAuth2Helper;
+import io.mapping.api.billsplit.oauth2.OAuth2Helper;
+import io.mapping.api.billsplit.oauth2.StateGenerator;
+import io.mapping.api.billsplit.reflection.AutoPackageNameProviderAlgorithm;
+import io.mapping.api.billsplit.reflection.PackageNameProvider;
+import io.mapping.api.billsplit.reflection.PackageNameProviderAlgorithm;
+import io.mapping.api.billsplit.reflection.RuntimePackageNameProvider;
+import io.mapping.api.billsplit.resources.AuthResource;
+import io.mapping.api.billsplit.resources.GoogleTokenResource;
+import io.mapping.api.billsplit.resources.UserResource;
+import io.mapping.api.billsplit.sessions.SessionAttributes;
+import io.mapping.api.billsplit.sessions.SessionAttributesImpl;
 import io.mapping.api.billsplit.settings.JsonFileSettingsReader;
 import io.mapping.api.billsplit.settings.SettingsReader;
 import io.mapping.api.billsplit.settings.models.APISettings;
@@ -67,6 +78,9 @@ public class BillSplitServletModule extends ServletModule {
 
 		bind(StateGenerator.class).to(BigIntegerStateGenerator.class).in(Scopes.SINGLETON);
 		bind(OAuth2Helper.class).to(GoogleOAuth2Helper.class).in(Scopes.SINGLETON);
+		bind(PackageNameProvider.class).to(RuntimePackageNameProvider.class).in(Scopes.SINGLETON);
+		bind(PackageNameProviderAlgorithm.class).to(AutoPackageNameProviderAlgorithm.class).in(Scopes.SINGLETON);
+		bind(SessionAttributes.class).to(SessionAttributesImpl.class).in(Scopes.SINGLETON);
 
 		/**
 		 * Hook in Jackson

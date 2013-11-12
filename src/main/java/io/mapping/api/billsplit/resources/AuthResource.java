@@ -20,8 +20,8 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import io.mapping.api.billsplit.exceptions.NoTokenException;
 import io.mapping.api.billsplit.entities.UserEntity;
+import io.mapping.api.billsplit.exceptions.NoTokenException;
 import io.mapping.api.billsplit.oauth2.OAuth2Helper;
 import io.mapping.api.billsplit.sessions.SessionAttributes;
 
@@ -44,13 +44,18 @@ public class AuthResource {
 
 	@Inject
 	private JacksonFactory mJacksonFactory;
+
 	@Inject
 	private OAuth2Helper mOAuth2Helper;
+
 	@Inject
 	private EntityManager mEntityManager;
 
 	@Inject
 	private UserResource mUserResource;
+
+	@Inject
+	private SessionAttributes mSessionAttributes;
 
 	@POST
 	@Path("/login")
@@ -92,11 +97,11 @@ public class AuthResource {
 	}
 
 	private void setUserInSession(UserEntity userEntity) {
-		mRequest.getSession().setAttribute(SessionAttributes.USER, userEntity);
+		mRequest.getSession().setAttribute(mSessionAttributes.getAttribute(SessionAttributes.Attribute.USER), userEntity);
 	}
 
 	private UserEntity getSessionUser(HttpServletRequest request) {
-		return (UserEntity) request.getSession().getAttribute(SessionAttributes.USER);
+		return (UserEntity) request.getSession().getAttribute(mSessionAttributes.getAttribute(SessionAttributes.Attribute.USER));
 	}
 
 	@DELETE
@@ -107,7 +112,7 @@ public class AuthResource {
 		mOAuth2Helper.removeState(mRequest);
 		mOAuth2Helper.removeToken(mRequest);
 
-		mRequest.getSession().removeAttribute(SessionAttributes.USER);
+		mRequest.getSession().removeAttribute(mSessionAttributes.getAttribute(SessionAttributes.Attribute.USER));
 
 		return true;
 	}
