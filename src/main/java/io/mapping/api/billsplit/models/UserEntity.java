@@ -5,10 +5,10 @@ import javax.persistence.*;
 @Entity
 @Table(name = "\"user\"")
 @NamedQueries({
-		@NamedQuery(name = "user.findById", query = "from User where id = :id"),
-		@NamedQuery(name = "user.findByGoogleId", query = "from User where googleId = :googleId")
+		@NamedQuery(name = "user.findById", query = "from UserEntity where id = :id"),
+		@NamedQuery(name = "user.findByGoogleId", query = "from UserEntity where googleId = :googleId")
 })
-public class User {
+public class UserEntity {
 	private long mId;
 	private String mGoogleId;
 	private String mEmail;
@@ -58,34 +58,34 @@ public class User {
 	}
 
 	public static class Builder {
-		private User mUser;
+		private UserEntity mUserEntity;
 
 		public Builder() {
-			mUser = new User();
+			mUserEntity = new UserEntity();
 		}
 
 		public Builder googleId(String googleId) {
-			mUser.mGoogleId = googleId;
+			mUserEntity.mGoogleId = googleId;
 			return this;
 		}
 
 		public Builder email(String email) {
-			mUser.mEmail = email;
+			mUserEntity.mEmail = email;
 			return this;
 		}
 
 		public Builder firstName(String firstName) {
-			mUser.mFirstName = firstName;
+			mUserEntity.mFirstName = firstName;
 			return this;
 		}
 
 		public Builder lastName(String lastName) {
-			mUser.mLastName = lastName;
+			mUserEntity.mLastName = lastName;
 			return this;
 		}
 
-		public User build() {
-			return mUser;
+		public UserEntity build() {
+			return mUserEntity;
 		}
 	}
 }
