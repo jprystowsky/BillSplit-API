@@ -16,6 +16,10 @@
 
 package io.mapping.api.billsplit.reflection;
 
+/**
+ * A provider for the name of packages. This is decoupled from the {@link PackageNameProviderAlgorithm} that
+ * actually does the determination. This class is a proxy between the two.
+ */
 public interface PackageNameProvider {
 	public String getPackageName(Class clazz);
 }

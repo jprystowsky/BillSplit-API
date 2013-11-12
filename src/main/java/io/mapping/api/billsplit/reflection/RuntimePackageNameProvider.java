@@ -18,6 +18,9 @@ package io.mapping.api.billsplit.reflection;
 
 import com.google.inject.Inject;
 
+/**
+ * Determines the name of packages at runtime via reflection.
+ */
 public class RuntimePackageNameProvider implements PackageNameProvider {
 	@Inject
 	PackageNameProviderAlgorithm mPackageNameProviderAlgorithm;

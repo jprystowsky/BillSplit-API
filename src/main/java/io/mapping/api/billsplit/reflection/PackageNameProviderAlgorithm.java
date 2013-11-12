@@ -16,6 +16,9 @@
 
 package io.mapping.api.billsplit.reflection;
 
+/**
+ * Represents an algorithm for determining the name of the package of a class.
+ */
 public interface PackageNameProviderAlgorithm {
 	public String determinePackageName(Class clazz);
 }

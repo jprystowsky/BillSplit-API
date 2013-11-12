@@ -16,6 +16,9 @@
 
 package io.mapping.api.billsplit.reflection;
 
+/**
+ * Determines the package of a class at runtime by asking it.
+ */
 public class AutoPackageNameProviderAlgorithm implements PackageNameProviderAlgorithm {
 	@Override
 	public String determinePackageName(Class clazz) {
