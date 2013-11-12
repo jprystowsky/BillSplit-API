@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.mapping.api.billsplit.models;
+package io.mapping.api.billsplit.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

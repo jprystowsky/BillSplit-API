@@ -1,4 +1,4 @@
-package io.mapping.api.billsplit.models;
+package io.mapping.api.billsplit.entities;
 
 import org.hibernate.annotations.GenericGenerator;
 
