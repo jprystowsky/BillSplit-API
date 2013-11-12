@@ -25,7 +25,7 @@ import com.google.api.services.oauth2.Oauth2;
 import com.google.api.services.oauth2.model.Tokeninfo;
 import com.google.inject.Inject;
 import io.mapping.api.billsplit.exceptions.GenericOAuthTokenErrorException;
-import io.mapping.api.billsplit.session.SessionAttributes;
+import io.mapping.api.billsplit.sessions.SessionAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

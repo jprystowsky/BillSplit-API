@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package io.mapping.api.billsplit.session;
+package io.mapping.api.billsplit.sessions;
 
 /**
  * A big bag of strings, used for consistency in {@link javax.servlet.http.HttpSession} access.
  */
 public class SessionAttributes {
-	private static final String PREFIX = "io.mapping.api.billsplit.session.";
+	private static final String PREFIX = "io.mapping.api.billsplit.sessions.";
 
 	public static final String STATE = PREFIX + "STATE";
 	public static final String TOKEN = PREFIX + "TOKEN";

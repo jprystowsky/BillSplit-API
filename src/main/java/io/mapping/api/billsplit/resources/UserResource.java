@@ -1,4 +1,4 @@
-package io.mapping.api.billsplit.resource;
+package io.mapping.api.billsplit.resources;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
@@ -11,7 +11,7 @@ import com.google.inject.Singleton;
 import io.mapping.api.billsplit.exceptions.NoTokenException;
 import io.mapping.api.billsplit.entities.UserEntity;
 import io.mapping.api.billsplit.oauth2.OAuth2Helper;
-import io.mapping.api.billsplit.session.SessionAttributes;
+import io.mapping.api.billsplit.sessions.SessionAttributes;
 import io.mapping.api.billsplit.settings.SettingsReader;
 
 import javax.persistence.EntityManager;

@@ -27,7 +27,7 @@ import com.google.inject.Singleton;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import io.mapping.api.billsplit.oauth2.*;
-import io.mapping.api.billsplit.resource.*;
+import io.mapping.api.billsplit.resources.*;
 import io.mapping.api.billsplit.settings.JsonFileSettingsReader;
 import io.mapping.api.billsplit.settings.SettingsReader;
 import io.mapping.api.billsplit.settings.models.APISettings;

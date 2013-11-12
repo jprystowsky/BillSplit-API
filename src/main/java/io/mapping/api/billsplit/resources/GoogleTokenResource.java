@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.mapping.api.billsplit.resource;
+package io.mapping.api.billsplit.resources;
 
 import com.google.api.client.auth.oauth2.TokenResponseException;
 import com.google.api.client.googleapis.auth.oauth2.*;
