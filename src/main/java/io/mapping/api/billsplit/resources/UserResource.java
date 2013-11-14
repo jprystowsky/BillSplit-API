@@ -16,6 +16,7 @@ import io.mapping.api.billsplit.settings.SettingsReader;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -49,6 +50,25 @@ public class UserResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public UserEntity getMe(@Context HttpServletRequest request) throws IOException {
 		return (UserEntity) request.getSession().getAttribute(mSessionAttributes.getAttribute(SessionAttributes.Attribute.USER));
+	}
+
+	@GET
+	@Path("{id}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public UserEntity getId(@PathParam("id") final String id) {
+		if (id == null || id.equals("")) {
+			return null;
+		}
+
+		try {
+			return mEntityManager
+					.createNamedQuery("user.findById", UserEntity.class)
+					.setParameter("id", id)
+					.getSingleResult();
+		} catch (NoResultException ex) {
+			return null;
+		}
 	}
 
 	@POST
