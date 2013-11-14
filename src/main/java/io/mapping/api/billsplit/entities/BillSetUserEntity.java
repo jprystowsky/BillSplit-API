@@ -16,12 +16,13 @@
 
 package io.mapping.api.billsplit.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
+@NamedQueries({
+		@NamedQuery(name = "billSetUserEntity.findByUserId", query = "from BillSetUserEntity where user.id = :id")
+})
 public class BillSetUserEntity {
 	private UUID mId;
 	private BillSetEntity mBillSet;
