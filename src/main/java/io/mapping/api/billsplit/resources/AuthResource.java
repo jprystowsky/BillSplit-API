@@ -62,11 +62,13 @@ public class AuthResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public UserEntity login() throws IOException {
+		// Return existing user entity from session if applicable
 		UserEntity userEntity = getSessionUser(mRequest);
 		if (userEntity != null) {
 			return userEntity;
 		}
 
+		// Get the auth token
 		String token = mOAuth2Helper.getToken(mRequest);
 		if (token != null) {
 			GoogleTokenResponse tokenResponse = mOAuth2Helper.parseGoogleToken(token);
@@ -78,8 +80,8 @@ public class AuthResource {
 			String googleId = tokenResponse.parseIdToken().getPayload().getSubject();
 
 			try {
-				userEntity = (UserEntity) mEntityManager
-						.createNamedQuery("user.findByGoogleId")
+				userEntity = mEntityManager
+						.createNamedQuery("user.findByGoogleId", UserEntity.class)
 						.setParameter("googleId", googleId)
 						.getSingleResult();
 			} catch (NoResultException ex) {
