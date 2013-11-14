@@ -81,7 +81,7 @@ public class AuthResource {
 
 			try {
 				userEntity = mEntityManager
-						.createNamedQuery("user.findByGoogleId", UserEntity.class)
+						.createNamedQuery("userEntity.findByGoogleId", UserEntity.class)
 						.setParameter("googleId", googleId)
 						.getSingleResult();
 			} catch (NoResultException ex) {

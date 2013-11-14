@@ -63,7 +63,7 @@ public class UserResource {
 
 		try {
 			return mEntityManager
-					.createNamedQuery("user.findById", UserEntity.class)
+					.createNamedQuery("userEntity.findById", UserEntity.class)
 					.setParameter("id", id)
 					.getSingleResult();
 		} catch (NoResultException ex) {
@@ -111,7 +111,7 @@ public class UserResource {
 
 			// Return fresh to ensure it saved and to get 100% consistent values (e.g., id)
 			return (UserEntity) mEntityManager
-					.createNamedQuery("user.findByGoogleId")
+					.createNamedQuery("userEntity.findByGoogleId")
 					.setParameter("googleId", googleId)
 					.getSingleResult();
 		} else {

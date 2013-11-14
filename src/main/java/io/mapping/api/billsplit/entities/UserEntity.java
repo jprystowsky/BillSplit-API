@@ -7,8 +7,8 @@ import java.util.UUID;
 
 @Entity
 @NamedQueries({
-		@NamedQuery(name = "user.findById", query = "from UserEntity where id = :id"),
-		@NamedQuery(name = "user.findByGoogleId", query = "from UserEntity where googleId = :googleId")
+		@NamedQuery(name = "userEntity.findById", query = "from UserEntity where id = :id"),
+		@NamedQuery(name = "userEntity.findByGoogleId", query = "from UserEntity where googleId = :googleId")
 })
 public class UserEntity {
 	private UUID mId;
