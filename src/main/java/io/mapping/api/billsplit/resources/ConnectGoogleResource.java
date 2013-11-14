@@ -43,7 +43,7 @@ import static io.mapping.api.billsplit.exceptions.GenericOAuthTokenErrorExceptio
 
 @Path("/connect")
 @Singleton
-public class GoogleTokenResource {
+public class ConnectGoogleResource {
 	private static final String GOOGLE_REDIRECT_URI = "postmessage";
 
 	@Inject

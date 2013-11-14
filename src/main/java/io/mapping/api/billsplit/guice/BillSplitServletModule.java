@@ -35,7 +35,7 @@ import io.mapping.api.billsplit.reflection.PackageNameProvider;
 import io.mapping.api.billsplit.reflection.PackageNameProviderAlgorithm;
 import io.mapping.api.billsplit.reflection.RuntimePackageNameProvider;
 import io.mapping.api.billsplit.resources.AuthResource;
-import io.mapping.api.billsplit.resources.GoogleTokenResource;
+import io.mapping.api.billsplit.resources.ConnectGoogleResource;
 import io.mapping.api.billsplit.resources.UserResource;
 import io.mapping.api.billsplit.sessions.SessionAttributes;
 import io.mapping.api.billsplit.sessions.SessionAttributesImpl;
@@ -67,7 +67,7 @@ public class BillSplitServletModule extends ServletModule {
 		/**
 		 * Bind resources (i.e., backings to RESTful endpoints)
 		 */
-		bind(GoogleTokenResource.class);
+		bind(ConnectGoogleResource.class);
 		bind(AuthResource.class);
 		bind(UserResource.class);
 
