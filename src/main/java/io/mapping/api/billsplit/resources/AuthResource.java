@@ -24,11 +24,12 @@ import io.mapping.api.billsplit.entities.UserEntity;
 import io.mapping.api.billsplit.exceptions.NoTokenException;
 import io.mapping.api.billsplit.oauth2.OAuth2Helper;
 import io.mapping.api.billsplit.sessions.SessionAttributes;
+import io.mapping.api.billsplit.sessions.SessionUserProvider;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -39,8 +40,6 @@ import java.io.IOException;
 public class AuthResource {
 	@Context
 	private HttpServletRequest mRequest;
-	@Context
-	private HttpServletResponse mResponse;
 
 	@Inject
 	private JacksonFactory mJacksonFactory;
@@ -49,7 +48,7 @@ public class AuthResource {
 	private OAuth2Helper mOAuth2Helper;
 
 	@Inject
-	private EntityManager mEntityManager;
+	private EntityManagerFactory mEntityManagerFactory;
 
 	@Inject
 	private UserResource mUserResource;
@@ -57,13 +56,16 @@ public class AuthResource {
 	@Inject
 	private SessionAttributes mSessionAttributes;
 
+	@Inject
+	private SessionUserProvider mSessionUserProvider;
+
 	@POST
 	@Path("/login")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public UserEntity login() throws IOException {
 		// Return existing user entity from session if applicable
-		UserEntity userEntity = getSessionUser(mRequest);
+		UserEntity userEntity = mSessionUserProvider.getUser(mRequest.getSession());
 		if (userEntity != null) {
 			return userEntity;
 		}
@@ -79,14 +81,16 @@ public class AuthResource {
 
 			String googleId = tokenResponse.parseIdToken().getPayload().getSubject();
 
+			EntityManager em = mEntityManagerFactory.createEntityManager();
 			try {
-				userEntity = mEntityManager
-						.createNamedQuery("userEntity.findByGoogleId", UserEntity.class)
+				userEntity = em.createNamedQuery("userEntity.findByGoogleId", UserEntity.class)
 						.setParameter("googleId", googleId)
 						.getSingleResult();
 			} catch (NoResultException ex) {
 				// UserEntity does not yet exist
 				userEntity = mUserResource.createMe(mRequest);
+			} finally {
+				em.close();
 			}
 
 			setUserInSession(userEntity);
@@ -100,10 +104,6 @@ public class AuthResource {
 
 	private void setUserInSession(UserEntity userEntity) {
 		mRequest.getSession().setAttribute(mSessionAttributes.getAttribute(SessionAttributes.Attribute.USER), userEntity);
-	}
-
-	private UserEntity getSessionUser(HttpServletRequest request) {
-		return (UserEntity) request.getSession().getAttribute(mSessionAttributes.getAttribute(SessionAttributes.Attribute.USER));
 	}
 
 	@DELETE

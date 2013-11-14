@@ -21,13 +21,15 @@ import com.google.inject.Singleton;
 import io.mapping.api.billsplit.entities.BillSetEntity;
 import io.mapping.api.billsplit.entities.BillSetUserEntity;
 import io.mapping.api.billsplit.entities.UserEntity;
-import io.mapping.api.billsplit.sessions.SessionAttributes;
+import io.mapping.api.billsplit.sessions.SessionUserProvider;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -36,14 +38,12 @@ import java.util.List;
 @Path("/billset")
 @Singleton
 public class BillSetResource {
-	@Inject
+	@Context
 	private HttpServletRequest mRequest;
 	@Inject
-	private HttpServletResponse mResponse;
+	private EntityManagerFactory mEntityManagerFactory;
 	@Inject
-	private EntityManager mEntityManager;
-	@Inject
-	private SessionAttributes mSessionAttributes;
+	private SessionUserProvider mSessionUserProvider;
 
 	@GET
 	@Path("/user/{userId}")
@@ -54,14 +54,15 @@ public class BillSetResource {
 			return null;
 		}
 
-		UserEntity currentUser = (UserEntity) mRequest.getSession().getAttribute(mSessionAttributes.getAttribute(SessionAttributes.Attribute.USER));
+		UserEntity currentUser = mSessionUserProvider.getUser(mRequest.getSession());
 		if (currentUser == null) {
 			return null;
 		}
 
+		EntityManager em = mEntityManagerFactory.createEntityManager();
+
 		// Iterate over the bill sets that the current user is a part of
-		Iterator<BillSetUserEntity> billSetUserEntityIterator = mEntityManager
-				.createNamedQuery("billSetUserEntity.findByUserId", BillSetUserEntity.class)
+		Iterator<BillSetUserEntity> billSetUserEntityIterator = em.createNamedQuery("billSetUserEntity.findByUserId", BillSetUserEntity.class)
 				.setParameter("id", currentUser.getId())
 				.getResultList()
 				.iterator();
@@ -69,8 +70,7 @@ public class BillSetResource {
 		List<BillSetEntity> billSetEntities = new LinkedList<>();
 		while (billSetUserEntityIterator.hasNext()) {
 			try {
-				billSetEntities.add(mEntityManager
-						.createNamedQuery("billSetEntity.findById", BillSetEntity.class)
+				billSetEntities.add(em.createNamedQuery("billSetEntity.findById", BillSetEntity.class)
 						.setParameter("id", userId)
 						.getSingleResult());
 			} catch (NoResultException ex) {
@@ -81,6 +81,40 @@ public class BillSetResource {
 			}
 		}
 
+		em.close();
+
 		return billSetEntities;
+	}
+
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public BillSetEntity create(BillSetEntity templateEntity) {
+		if (templateEntity == null || templateEntity.getName().equals("")) {
+			return null;
+		}
+
+		UserEntity currentUser = mSessionUserProvider.getUser(mRequest.getSession());
+		if (currentUser == null) {
+			return null;
+		}
+
+		EntityManager em = mEntityManagerFactory.createEntityManager();
+		EntityTransaction tx = null;
+
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+
+			em.persist(templateEntity);
+
+			tx.commit();
+		} catch (RuntimeException ex) {
+			tx.rollback();
+		} finally {
+			em.close();
+		}
+
+		return templateEntity;
 	}
 }

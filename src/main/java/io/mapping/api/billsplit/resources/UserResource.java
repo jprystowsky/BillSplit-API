@@ -12,9 +12,11 @@ import io.mapping.api.billsplit.entities.UserEntity;
 import io.mapping.api.billsplit.exceptions.NoTokenException;
 import io.mapping.api.billsplit.oauth2.OAuth2Helper;
 import io.mapping.api.billsplit.sessions.SessionAttributes;
+import io.mapping.api.billsplit.sessions.SessionUserProvider;
 import io.mapping.api.billsplit.settings.SettingsReader;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +32,7 @@ public class UserResource {
 	private OAuth2Helper mOAuth2Helper;
 
 	@Inject
-	private EntityManager mEntityManager;
+	private EntityManagerFactory mEntityManagerFactory;
 
 	@Inject
 	private HttpTransport mHttpTransport;
@@ -44,12 +46,15 @@ public class UserResource {
 	@Inject
 	private SessionAttributes mSessionAttributes;
 
+	@Inject
+	private SessionUserProvider mSessionUserProvider;
+
 	@GET
 	@Path("me")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public UserEntity getMe(@Context HttpServletRequest request) throws IOException {
-		return (UserEntity) request.getSession().getAttribute(mSessionAttributes.getAttribute(SessionAttributes.Attribute.USER));
+		return mSessionUserProvider.getUser(request.getSession());
 	}
 
 	@GET
@@ -61,9 +66,10 @@ public class UserResource {
 			return null;
 		}
 
+		EntityManager em = mEntityManagerFactory.createEntityManager();
+
 		try {
-			return mEntityManager
-					.createNamedQuery("userEntity.findById", UserEntity.class)
+			return em.createNamedQuery("userEntity.findById", UserEntity.class)
 					.setParameter("id", id)
 					.getSingleResult();
 		} catch (NoResultException ex) {
@@ -94,24 +100,31 @@ public class UserResource {
 					.build();
 			Person person = service.people().get(googleId).execute();
 
-			EntityTransaction transaction = mEntityManager.getTransaction();
-			transaction.begin();
+			EntityManager em = mEntityManagerFactory.createEntityManager();
+			EntityTransaction tx = null;
+			try {
+				tx = em.getTransaction();
+				tx.begin();
 
-			UserEntity userEntity = new UserEntity
-					.Builder()
-					.googleId(googleId)
-					.email(email)
-					.firstName(person.getName().getGivenName())
-					.lastName(person.getName().getFamilyName())
-					.build();
+				UserEntity userEntity = new UserEntity
+						.Builder()
+						.googleId(googleId)
+						.email(email)
+						.firstName(person.getName().getGivenName())
+						.lastName(person.getName().getFamilyName())
+						.build();
 
-			mEntityManager.persist(userEntity);
+				em.persist(userEntity);
 
-			transaction.commit();
+				tx.commit();
+			} catch (RuntimeException ex) {
+				tx.rollback();
+			} finally {
+				em.close();
+			}
 
 			// Return fresh to ensure it saved and to get 100% consistent values (e.g., id)
-			return (UserEntity) mEntityManager
-					.createNamedQuery("userEntity.findByGoogleId")
+			return (UserEntity) em.createNamedQuery("userEntity.findByGoogleId")
 					.setParameter("googleId", googleId)
 					.getSingleResult();
 		} else {

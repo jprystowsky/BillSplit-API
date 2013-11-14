@@ -26,7 +26,6 @@ import io.mapping.api.billsplit.exceptions.InvalidOAuthStateException;
 import io.mapping.api.billsplit.exceptions.NullOAuthCodeException;
 import io.mapping.api.billsplit.oauth2.OAuth2Helper;
 
-import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.POST;
@@ -48,9 +47,6 @@ public class ConnectGoogleResource {
 
 	@Inject
 	private OAuth2Helper mOAuth2Helper;
-
-	@Inject
-	private EntityManager mEntityManager;
 
 	@Inject
 	private HttpTransport mHttpTransport;

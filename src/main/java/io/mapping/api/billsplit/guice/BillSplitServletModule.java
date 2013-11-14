@@ -40,11 +40,12 @@ import io.mapping.api.billsplit.resources.ConnectGoogleResource;
 import io.mapping.api.billsplit.resources.UserResource;
 import io.mapping.api.billsplit.sessions.SessionAttributes;
 import io.mapping.api.billsplit.sessions.SessionAttributesImpl;
+import io.mapping.api.billsplit.sessions.SessionUserProvider;
+import io.mapping.api.billsplit.sessions.SessionUserProviderImpl;
 import io.mapping.api.billsplit.settings.JsonFileSettingsReader;
 import io.mapping.api.billsplit.settings.SettingsReader;
-import io.mapping.api.billsplit.settings.models.APISettings;
 
-import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -60,6 +61,10 @@ public class BillSplitServletModule extends ServletModule {
 			.Builder()
 			.fileName(FILE_SETTINGS)
 			.build();
+
+	private static final EntityManagerFactory ENTITY_MANAGER_FACTORY = Persistence
+			.createEntityManagerFactory(SETTINGS_READER.getSettings()
+					.getPersistenceUnitName());
 
 	private static final JacksonFactory JSON_FACTORY = new JacksonFactory();
 
@@ -83,16 +88,12 @@ public class BillSplitServletModule extends ServletModule {
 		bind(PackageNameProvider.class).to(RuntimePackageNameProvider.class).in(Scopes.SINGLETON);
 		bind(PackageNameProviderAlgorithm.class).to(AutoPackageNameProviderAlgorithm.class).in(Scopes.SINGLETON);
 		bind(SessionAttributes.class).to(SessionAttributesImpl.class).in(Scopes.SINGLETON);
+		bind(SessionUserProvider.class).to(SessionUserProviderImpl.class).in(Scopes.SINGLETON);
 
 		/**
 		 * Hook in Jackson
 		 */
 		bind(JacksonJsonProvider.class).in(Scopes.SINGLETON);
-
-		/**
-		 * Establish filtering.
-		 */
-		//filter("/*").through(CORSFilter.class);
 
 		/**
 		 * Serve it up, boss!
@@ -108,12 +109,8 @@ public class BillSplitServletModule extends ServletModule {
 
 	@Provides
 	@Singleton
-	EntityManager provideEntityManager() {
-		APISettings apiSettings = SETTINGS_READER.getSettings();
-
-		return Persistence
-				.createEntityManagerFactory(apiSettings.getPersistenceUnitName())
-				.createEntityManager();
+	EntityManagerFactory provideEntityManagerFactory() {
+		return ENTITY_MANAGER_FACTORY;
 	}
 
 	@Provides
