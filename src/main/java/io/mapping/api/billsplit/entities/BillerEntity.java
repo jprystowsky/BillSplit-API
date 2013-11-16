@@ -22,6 +22,10 @@ import javax.persistence.*;
 import java.util.Collection;
 import java.util.UUID;
 
+/**
+ * A biller -- someone who issues a bill to be paid.
+ */
+
 @Entity
 public class BillerEntity {
 	private UUID mID;
@@ -32,7 +36,7 @@ public class BillerEntity {
 	@Id
 	@GeneratedValue(generator = "uuid")
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
-	@Column(unique = true)
+	@Column(unique = true, nullable = false)
 	public UUID getID() {
 		return mID;
 	}
@@ -40,7 +44,7 @@ public class BillerEntity {
 		mID = ID;
 	}
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 64, unique = true)
 	public String getName() {
 		return mName;
 	}
@@ -48,7 +52,7 @@ public class BillerEntity {
 		mName = name;
 	}
 
-	@OneToMany(cascade = CascadeType.REMOVE)
+	@OneToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, fetch = FetchType.EAGER, mappedBy = "biller")
 	public Collection<BillEntity> getBills() {
 		return mBills;
 	}
@@ -56,7 +60,7 @@ public class BillerEntity {
 		mBills = bills;
 	}
 
-	@OneToOne(cascade = CascadeType.REMOVE)
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	public ContactEntity getContactEntity() {
 		return mContactEntity;
 	}

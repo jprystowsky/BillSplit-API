@@ -24,6 +24,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.UUID;
 
+/**
+ * A line of an address.
+ */
+
 @Entity
 public class AddressLineEntity {
 	private UUID mID;
@@ -33,7 +37,7 @@ public class AddressLineEntity {
 	@Id
 	@GeneratedValue(generator = "uuid")
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
-	@Column(unique = true)
+	@Column(unique = true, nullable = false)
 	public UUID getID() {
 		return mID;
 	}
@@ -41,7 +45,7 @@ public class AddressLineEntity {
 		mID = ID;
 	}
 
-	@Column(nullable = false)
+	@Column(nullable = false, precision = 1, scale = 0)
 	public int getIndex() {
 		return mIndex;
 	}
@@ -49,7 +53,7 @@ public class AddressLineEntity {
 		mIndex = index;
 	}
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 64)
 	public String getValue() {
 		return mValue;
 	}

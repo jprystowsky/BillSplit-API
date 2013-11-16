@@ -44,7 +44,7 @@ public class BillDelegateEntity {
 		mID = ID;
 	}
 
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false, cascade = { CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH }, fetch = FetchType.EAGER)
 	public UserEntity getUser() {
 		return mUser;
 	}

@@ -19,21 +19,24 @@ package io.mapping.api.billsplit.entities;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.UUID;
 
+/**
+ * A contact person.
+ */
+
 @Entity
-public class PersonEntity {
+public class ContactPersonEntity {
 	private UUID mID;
 	private String mName;
 	private String mRole;
 	private String mNotes;
-	private Collection<ContactEntity> mContactEntities;
+	private ContactEntity mContactEntity;
 
 	@Id
 	@GeneratedValue(generator = "uuid")
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
-	@Column(unique = true)
+	@Column(unique = true, nullable = false)
 	public UUID getID() {
 		return mID;
 	}
@@ -41,7 +44,7 @@ public class PersonEntity {
 		mID = ID;
 	}
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 64)
 	public String getName() {
 		return mName;
 	}
@@ -49,6 +52,7 @@ public class PersonEntity {
 		mName = name;
 	}
 
+	@Column(length = 32)
 	public String getRole() {
 		return mRole;
 	}
@@ -63,11 +67,11 @@ public class PersonEntity {
 		mNotes = notes;
 	}
 
-	@OneToMany(cascade = CascadeType.REMOVE)
-	public Collection<ContactEntity> getContactEntities() {
-		return mContactEntities;
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+	public ContactEntity getContactEntity() {
+		return mContactEntity;
 	}
-	public void setContactEntities(Collection<ContactEntity> contactEntities) {
-		mContactEntities = contactEntities;
+	public void setContactEntity(ContactEntity contactEntity) {
+		mContactEntity = contactEntity;
 	}
 }

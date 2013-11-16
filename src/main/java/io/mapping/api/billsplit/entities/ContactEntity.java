@@ -22,6 +22,10 @@ import javax.persistence.*;
 import java.util.Collection;
 import java.util.UUID;
 
+/**
+ * A set of contact information.
+ */
+
 @Entity
 public class ContactEntity {
 	private UUID mID;
@@ -35,14 +39,14 @@ public class ContactEntity {
 
 	private String mWebsite;
 
-	private Collection<PersonEntity> mPersons;
+	private Collection<ContactPersonEntity> mPersons;
 
 	private ContactTypeEntity mContactType;
 
 	@Id
 	@GeneratedValue(generator = "uuid")
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
-	@Column(unique = true)
+	@Column(unique = true, nullable = false)
 	public UUID getID() {
 		return mID;
 	}
@@ -50,7 +54,7 @@ public class ContactEntity {
 		mID = ID;
 	}
 
-	@OneToMany(cascade = CascadeType.REMOVE)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	public Collection<AddressLineEntity> getAddressLines() {
 		return mAddressLines;
 	}
@@ -58,6 +62,7 @@ public class ContactEntity {
 		mAddressLines = addressLines;
 	}
 
+	@Column(length = 32)
 	public String getCity() {
 		return mCity;
 	}
@@ -65,6 +70,7 @@ public class ContactEntity {
 		mCity = city;
 	}
 
+	@Column(length = 16)
 	public String getState() {
 		return mState;
 	}
@@ -72,6 +78,7 @@ public class ContactEntity {
 		mState = state;
 	}
 
+	@Column(length = 10)
 	public String getZipCode() {
 		return mZipCode;
 	}
@@ -79,6 +86,7 @@ public class ContactEntity {
 		mZipCode = zipCode;
 	}
 
+	@Column(length = 24)
 	public String getPhoneNumber() {
 		return mPhoneNumber;
 	}
@@ -86,6 +94,7 @@ public class ContactEntity {
 		mPhoneNumber = phoneNumber;
 	}
 
+	@Column(length = 128)
 	public String getWebsite() {
 		return mWebsite;
 	}
@@ -93,15 +102,15 @@ public class ContactEntity {
 		mWebsite = website;
 	}
 
-	@OneToMany(cascade = CascadeType.REMOVE)
-	public Collection<PersonEntity> getPersons() {
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+	public Collection<ContactPersonEntity> getPersons() {
 		return mPersons;
 	}
-	public void setPersons(Collection<PersonEntity> persons) {
+	public void setPersons(Collection<ContactPersonEntity> persons) {
 		mPersons = persons;
 	}
 
-	@OneToOne(cascade = CascadeType.REMOVE)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	public ContactTypeEntity getContactType() {
 		return mContactType;
 	}

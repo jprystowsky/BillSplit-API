@@ -20,7 +20,7 @@ public class UserEntity {
 	@Id
 	@GeneratedValue(generator = "uuid")
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
-	@Column(unique = true)
+	@Column(unique = true, nullable = false)
 	public UUID getId() {
 		return mId;
 	}
@@ -28,7 +28,7 @@ public class UserEntity {
 		mId = id;
 	}
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 64)
 	public String getGoogleId() {
 		return mGoogleId;
 	}
@@ -36,7 +36,7 @@ public class UserEntity {
 		mGoogleId = googleId;
 	}
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 128)
 	public String getEmail() {
 		return mEmail;
 	}
@@ -44,7 +44,7 @@ public class UserEntity {
 		mEmail = email;
 	}
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 32)
 	public String getFirstName() {
 		return mFirstName;
 	}
@@ -52,7 +52,7 @@ public class UserEntity {
 		mFirstName = firstName;
 	}
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 32)
 	public String getLastName() {
 		return mLastName;
 	}

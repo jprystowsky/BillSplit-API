@@ -20,9 +20,13 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
+
+/**
+ * A single bill.
+ */
 
 @Entity
 public class BillEntity {
@@ -30,7 +34,7 @@ public class BillEntity {
 	private BillerEntity mBiller;
 	private Date mDate;
 	private BigDecimal mAmount;
-	private Collection<TagEntity> mTags;
+	private Set<TagEntity> mTags;
 	private CategoryEntity mCategory;
 	private String mNotes;
 	private SettlementEntity mSettlement;
@@ -38,7 +42,7 @@ public class BillEntity {
 	@Id
 	@GeneratedValue(generator = "uuid")
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
-	@Column(unique = true)
+	@Column(unique = true, nullable = false)
 	public UUID getID() {
 		return mID;
 	}
@@ -46,8 +50,7 @@ public class BillEntity {
 		mID = ID;
 	}
 
-	@ManyToOne
-	@JoinColumn(nullable = false)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH }, optional = false)
 	public BillerEntity getBiller() {
 		return mBiller;
 	}
@@ -55,7 +58,8 @@ public class BillEntity {
 		mBiller = biller;
 	}
 
-	@Temporal(value = TemporalType.DATE)
+	@Temporal(TemporalType.DATE)
+	@Column(nullable = false)
 	public Date getDate() {
 		return mDate;
 	}
@@ -71,15 +75,15 @@ public class BillEntity {
 		mAmount = amount;
 	}
 
-	@ManyToMany
-	public Collection<TagEntity> getTags() {
+	@ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
+	public Set<TagEntity> getTags() {
 		return mTags;
 	}
-	public void setTags(Collection<TagEntity> tags) {
+	public void setTags(Set<TagEntity> tags) {
 		mTags = tags;
 	}
 
-	@ManyToOne
+	@ManyToOne(optional = false, cascade = { CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH }, fetch = FetchType.EAGER)
 	public CategoryEntity getCategory() {
 		return mCategory;
 	}
@@ -94,7 +98,7 @@ public class BillEntity {
 		mNotes = notes;
 	}
 
-	@ManyToOne(cascade = CascadeType.REMOVE)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
 	public SettlementEntity getSettlement() {
 		return mSettlement;
 	}

@@ -61,7 +61,7 @@ public class SettlementEntity {
 		mComments = comments;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "settlement")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "settlement")
 	public Collection<BillEntity> getBills() {
 		return mBills;
 	}

@@ -49,7 +49,7 @@ public class BillSetEntity {
 		mId = id;
 	}
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 64)
 	public String getName() {
 		return name;
 	}
@@ -65,7 +65,7 @@ public class BillSetEntity {
 		mBills = bills;
 	}
 
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, fetch = FetchType.EAGER)
 	public Set<UserEntity> getUsers() {
 		return mUsers;
 	}
@@ -73,8 +73,7 @@ public class BillSetEntity {
 		mUsers = users;
 	}
 
-	// TODO: Ensure this is the right cascade type! Test removing and see if this goes away if another wants it still.
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	public Set<BillDelegateEntity> getBillDelegates() {
 		return mBillDelegates;
 	}

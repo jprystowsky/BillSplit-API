@@ -24,6 +24,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.UUID;
 
+/**
+ * A type of contact.
+ */
+
 @Entity
 public class ContactTypeEntity {
 	private UUID mID;
@@ -32,7 +36,7 @@ public class ContactTypeEntity {
 	@Id
 	@GeneratedValue(generator = "uuid")
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
-	@Column(unique = true)
+	@Column(unique = true, nullable = false)
 	public UUID getID() {
 		return mID;
 	}
@@ -40,7 +44,7 @@ public class ContactTypeEntity {
 		mID = ID;
 	}
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 32)
 	public String getName() {
 		return mName;
 	}

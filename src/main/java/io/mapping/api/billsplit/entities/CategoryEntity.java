@@ -32,7 +32,7 @@ public class CategoryEntity {
 	@Id
 	@GeneratedValue(generator = "uuid")
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
-	@Column(unique = true)
+	@Column(unique = true, nullable = false)
 	public UUID getID() {
 		return mID;
 	}
@@ -40,7 +40,7 @@ public class CategoryEntity {
 		mID = ID;
 	}
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 64)
 	public String getName() {
 		return mName;
 	}
@@ -48,7 +48,7 @@ public class CategoryEntity {
 		mName = name;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	public CategoryEntity getParent() {
 		return mParent;
 	}
@@ -56,7 +56,7 @@ public class CategoryEntity {
 		mParent = parent;
 	}
 
-	@OneToMany
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "parent", orphanRemoval = true, cascade = CascadeType.ALL)
 	public Collection<CategoryEntity> getChildren() {
 		return mChildren;
 	}
