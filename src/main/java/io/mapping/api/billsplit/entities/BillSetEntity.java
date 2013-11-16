@@ -19,6 +19,8 @@ package io.mapping.api.billsplit.entities;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
 
@@ -79,5 +81,22 @@ public class BillSetEntity {
 	}
 	public void setBillDelegates(Set<BillDelegateEntity> billDelegates) {
 		mBillDelegates = billDelegates;
+	}
+
+	@Transient
+	public int billCount() {
+		return this.getBills().size();
+	}
+
+	@Transient
+	public BigDecimal billAmountsSum() {
+		BigDecimal sum = new BigDecimal(0);
+
+		Iterator<BillEntity> billIterator = this.getBills().iterator();
+		while (billIterator.hasNext()) {
+			sum.add(billIterator.next().getAmount());
+		}
+
+		return sum;
 	}
 }
