@@ -94,7 +94,7 @@ public class BillEntity {
 		mNotes = notes;
 	}
 
-	@OneToOne(cascade = CascadeType.REMOVE)
+	@ManyToOne(cascade = CascadeType.REMOVE)
 	public SettlementEntity getSettlement() {
 		return mSettlement;
 	}
