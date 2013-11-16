@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -48,7 +49,7 @@ public class BillSetResource {
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<BillSetEntity> get() {
+	public Collection<BillSetEntity> get() {
 		UserEntity currentUser = mSessionUserProvider.getUser(mRequest.getSession());
 		if (currentUser == null) {
 			return null;
