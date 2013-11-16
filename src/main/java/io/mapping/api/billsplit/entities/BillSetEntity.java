@@ -19,7 +19,7 @@ package io.mapping.api.billsplit.entities;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.Collection;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -28,15 +28,15 @@ import java.util.UUID;
 
 @Entity
 @NamedQueries({
-		@NamedQuery(name = "billSetEntity.findById", query = "from BillSetEntity where id = :id"),
-		@NamedQuery(name = "billSetEntity.findByUserId", query = "from BillSetEntity bse join bse.users u where u.id = :id")
+		@NamedQuery(name = "billSetEntity.findById", query = "from BillSetEntity bse left outer join bse.bills b where bse.id = :id and b.settlement is null"),
+		@NamedQuery(name = "billSetEntity.findByUserId", query = "select bse from BillSetEntity bse join bse.users u left outer join bse.bills b where u.id = :userId and b.settlement is null"),
 })
 public class BillSetEntity {
 	private UUID mId;
 	private String name;
-	private Collection<BillEntity> mBills;
-	private Collection<UserEntity> mUsers;
-	private Collection<BillDelegateEntity> mBillDelegates;
+	private Set<BillEntity> mBills;
+	private Set<UserEntity> mUsers;
+	private Set<BillDelegateEntity> mBillDelegates;
 
 	@Id
 	@GeneratedValue(generator = "uuid")
@@ -57,27 +57,28 @@ public class BillSetEntity {
 		this.name = name;
 	}
 
-	@OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-	public Collection<BillEntity> getBills() {
+	@OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	public Set<BillEntity> getBills() {
 		return mBills;
 	}
-	public void setBills(Collection<BillEntity> bills) {
+	public void setBills(Set<BillEntity> bills) {
 		mBills = bills;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY)
-	public Collection<UserEntity> getUsers() {
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	public Set<UserEntity> getUsers() {
 		return mUsers;
 	}
-	public void setUsers(Collection<UserEntity> users) {
+	public void setUsers(Set<UserEntity> users) {
 		mUsers = users;
 	}
 
-	@ManyToMany(fetch = FetchType.LAZY)
-	public Collection<BillDelegateEntity> getBillDelegates() {
+	// TODO: Ensure this is the right cascade type! Test removing and see if this goes away if another wants it still.
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	public Set<BillDelegateEntity> getBillDelegates() {
 		return mBillDelegates;
 	}
-	public void setBillDelegates(Collection<BillDelegateEntity> billDelegates) {
+	public void setBillDelegates(Set<BillDelegateEntity> billDelegates) {
 		mBillDelegates = billDelegates;
 	}
 }
