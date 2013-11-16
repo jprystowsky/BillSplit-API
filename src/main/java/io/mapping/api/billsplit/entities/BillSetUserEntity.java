@@ -16,6 +16,8 @@
 
 package io.mapping.api.billsplit.entities;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.util.UUID;
 
@@ -29,6 +31,9 @@ public class BillSetUserEntity {
 	private UserEntity mUser;
 
 	@Id
+	@GeneratedValue(generator = "uuid")
+	@GenericGenerator(name = "uuid", strategy = "uuid2")
+	@Column(unique = true)
 	public UUID getId() {
 		return mId;
 	}
@@ -50,5 +55,29 @@ public class BillSetUserEntity {
 	}
 	public void setUser(UserEntity user) {
 		mUser = user;
+	}
+
+	public static class Builder {
+		private final BillSetUserEntity mBillSetUserEntity;
+
+		public Builder() {
+			mBillSetUserEntity = new BillSetUserEntity();
+		}
+
+		public Builder billSet(BillSetEntity billSet) {
+			mBillSetUserEntity.setBillSet(billSet);
+
+			return this;
+		}
+
+		public Builder user(UserEntity user) {
+			mBillSetUserEntity.setUser(user);
+
+			return this;
+		}
+
+		public BillSetUserEntity build() {
+			return mBillSetUserEntity;
+		}
 	}
 }
