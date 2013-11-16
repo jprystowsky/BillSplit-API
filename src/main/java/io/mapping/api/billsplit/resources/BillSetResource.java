@@ -19,22 +19,17 @@ package io.mapping.api.billsplit.resources;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import io.mapping.api.billsplit.entities.BillSetEntity;
-import io.mapping.api.billsplit.entities.BillSetUserEntity;
 import io.mapping.api.billsplit.entities.UserEntity;
 import io.mapping.api.billsplit.sessions.SessionUserProvider;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
-import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Path("/billset")
 @Singleton
@@ -57,24 +52,14 @@ public class BillSetResource {
 
 		EntityManager em = mEntityManagerFactory.createEntityManager();
 
-		// Iterate over the bill sets that the current user is a part of
-		Iterator<BillSetUserEntity> billSetUserEntityIterator = em.createNamedQuery("billSetUserEntity.findByUserId", BillSetUserEntity.class)
-				.setParameter("id", currentUser.getId())
-				.getResultList()
-				.iterator();
+		Collection<BillSetEntity> billSetEntities = em.createNamedQuery("billSetEntity.findByUserId", BillSetEntity.class)
+				.setParameter("userId", currentUser.getId())
+				.getResultList();
 
-		List<BillSetEntity> billSetEntities = new LinkedList<>();
-		while (billSetUserEntityIterator.hasNext()) {
-			try {
-				billSetEntities.add(em.createNamedQuery("billSetEntity.findById", BillSetEntity.class)
-						.setParameter("id", billSetUserEntityIterator.next().getBillSet().getId())
-						.getSingleResult());
-			} catch (NoResultException ex) {
-				/**
-				 * Swallow the exception because it is dumb, although this should never be reached
-				 * given the iterator
-				 */
-			}
+		// Detach so we can safely return them
+		Iterator<BillSetEntity> billSetEntityIterator = billSetEntities.iterator();
+		while (billSetEntityIterator.hasNext()) {
+			em.detach(billSetEntityIterator.next());
 		}
 
 		em.close();
@@ -96,24 +81,24 @@ public class BillSetResource {
 		}
 
 		EntityManager em = mEntityManagerFactory.createEntityManager();
-		EntityTransaction tx = null;
 
+		// Insert the current user into the list of users
+		Set<UserEntity> userEntities = new HashSet<>(em.createNamedQuery("userEntity.findById", UserEntity.class)
+				.setParameter("id", currentUser.getId())
+				.getResultList());
+		templateEntity.setUsers(userEntities);
+
+		EntityTransaction tx = null;
 		try {
 			tx = em.getTransaction();
 			tx.begin();
 
 			em.persist(templateEntity);
 
-			// Flush so we can ask for the ID
-			em.flush();
-			BillSetUserEntity billSetUserEntity = new BillSetUserEntity.Builder()
-					.billSet(templateEntity)
-					.user(currentUser)
-					.build();
-
-			em.persist(billSetUserEntity);
-
 			tx.commit();
+
+			// Detach for return
+			em.detach(templateEntity);
 		} catch (RuntimeException ex) {
 			tx.rollback();
 		} finally {

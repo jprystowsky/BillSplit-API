@@ -102,11 +102,12 @@ public class UserResource {
 
 			EntityManager em = mEntityManagerFactory.createEntityManager();
 			EntityTransaction tx = null;
+			UserEntity userEntity = null;
 			try {
 				tx = em.getTransaction();
 				tx.begin();
 
-				UserEntity userEntity = new UserEntity
+				userEntity = new UserEntity
 						.Builder()
 						.googleId(googleId)
 						.email(email)
@@ -116,17 +117,18 @@ public class UserResource {
 
 				em.persist(userEntity);
 
+				// Commit before detachment, otherwise Hibernate won't commit the record!
 				tx.commit();
+
+				// Detach for return
+				em.detach(userEntity);
 			} catch (RuntimeException ex) {
 				tx.rollback();
 			} finally {
 				em.close();
 			}
 
-			// Return fresh to ensure it saved and to get 100% consistent values (e.g., id)
-			return (UserEntity) em.createNamedQuery("userEntity.findByGoogleId")
-					.setParameter("googleId", googleId)
-					.getSingleResult();
+			return userEntity;
 		} else {
 			throw new NoTokenException(500);
 		}
