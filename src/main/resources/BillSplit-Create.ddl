@@ -1,7 +1,7 @@
 -- Create schema script
 create table billsplit.public.AddressLineEntity (ID bytea not null,
                                                  index int4 not null,
-                                                 value varchar(255) not null,
+                                                 value varchar(64) not null,
   primary key (ID));
 
 create table billsplit.public.BillDelegateEntity (ID bytea not null,
@@ -14,18 +14,20 @@ create table billsplit.public.BillDelegateEntity (ID bytea not null,
 create table billsplit.public.BillEntity (ID bytea not null,
                                           amount numeric(15,
                                              2) not null,
-                                          date date,
+                                          date date not null,
                                           notes varchar(255),
                                           biller_ID bytea not null,
-                                          category_ID bytea,
+                                          category_ID bytea not null,
                                           settlement_ID bytea,
   primary key (ID));
 
 create table billsplit.public.BillEntity_TagEntity (BillEntity_ID bytea not null,
-                                                    tags_ID bytea not null);
+                                                    tags_ID bytea not null,
+  primary key (BillEntity_ID,
+               tags_ID));
 
 create table billsplit.public.BillSetEntity (id bytea not null,
-                                             name varchar(255) not null,
+                                             name varchar(64) not null,
   primary key (id));
 
 create table billsplit.public.BillSetEntity_BillDelegateEntity (BillSetEntity_id bytea not null,
@@ -44,48 +46,44 @@ create table billsplit.public.BillSetEntity_UserEntity (BillSetEntity_id bytea n
                users_id));
 
 create table billsplit.public.BillerEntity (ID bytea not null,
-                                            name varchar(255) not null,
+                                            name varchar(64) not null,
                                             contactEntity_ID bytea,
   primary key (ID));
 
-create table billsplit.public.BillerEntity_BillEntity (BillerEntity_ID bytea not null,
-                                                       bills_ID bytea not null);
-
 create table billsplit.public.CategoryEntity (ID bytea not null,
-                                              name varchar(255) not null,
+                                              name varchar(64) not null,
                                               parent_ID bytea,
   primary key (ID));
 
-create table billsplit.public.CategoryEntity_CategoryEntity (CategoryEntity_ID bytea not null,
-                                                             children_ID bytea not null);
-
 create table billsplit.public.ContactEntity (ID bytea not null,
-                                             city varchar(255),
-                                             phoneNumber varchar(255),
-                                             state varchar(255),
-                                             website varchar(255),
-                                             zipCode varchar(255),
+                                             city varchar(32),
+                                             phoneNumber varchar(24),
+                                             state varchar(16),
+                                             website varchar(128),
+                                             zipCode varchar(10),
                                              contactType_ID bytea,
   primary key (ID));
 
 create table billsplit.public.ContactEntity_AddressLineEntity (ContactEntity_ID bytea not null,
-                                                               addressLines_ID bytea not null);
+                                                               addressLines_ID bytea not null,
+  primary key (ContactEntity_ID,
+               addressLines_ID));
 
-create table billsplit.public.ContactEntity_PersonEntity (ContactEntity_ID bytea not null,
-                                                          persons_ID bytea not null);
+create table billsplit.public.ContactEntity_ContactPersonEntity (ContactEntity_ID bytea not null,
+                                                                 persons_ID bytea not null,
+  primary key (ContactEntity_ID,
+               persons_ID));
+
+create table billsplit.public.ContactPersonEntity (ID bytea not null,
+                                                   name varchar(64) not null,
+                                                   notes varchar(255),
+                                                   role varchar(32),
+                                                   contactEntity_ID bytea not null,
+  primary key (ID));
 
 create table billsplit.public.ContactTypeEntity (ID bytea not null,
-                                                 name varchar(255) not null,
+                                                 name varchar(32) not null,
   primary key (ID));
-
-create table billsplit.public.PersonEntity (ID bytea not null,
-                                            name varchar(255) not null,
-                                            notes varchar(255),
-                                            role varchar(255),
-  primary key (ID));
-
-create table billsplit.public.PersonEntity_ContactEntity (PersonEntity_ID bytea not null,
-                                                          contactEntities_ID bytea not null);
 
 create table billsplit.public.SettlementEntity (ID bytea not null,
                                                 comments varchar(255),
@@ -93,18 +91,15 @@ create table billsplit.public.SettlementEntity (ID bytea not null,
   primary key (ID));
 
 create table billsplit.public.TagEntity (ID bytea not null,
-                                         name varchar(255) not null,
+                                         name varchar(32) not null,
                                          parent_ID bytea,
   primary key (ID));
 
-create table billsplit.public.TagEntity_TagEntity (TagEntity_ID bytea not null,
-                                                   children_ID bytea not null);
-
 create table billsplit.public.UserEntity (id bytea not null,
-                                          email varchar(255) not null,
-                                          firstName varchar(255) not null,
-                                          googleId varchar(255) not null,
-                                          lastName varchar(255) not null,
+                                          email varchar(128) not null,
+                                          firstName varchar(32) not null,
+                                          googleId varchar(64) not null,
+                                          lastName varchar(32) not null,
   primary key (id));
 
 alter table billsplit.public.BillDelegateEntity add constraint FK_85b9ya89a0tblfv34qqx9o110 foreign key (user_id) references billsplit.public.UserEntity;
@@ -118,6 +113,8 @@ alter table billsplit.public.BillEntity add constraint FK_gv5yiwktttxy3p7208whn5
 alter table billsplit.public.BillEntity_TagEntity add constraint FK_lo9scyt3ulgf3ovlpuawp3ljd foreign key (tags_ID) references billsplit.public.TagEntity;
 
 alter table billsplit.public.BillEntity_TagEntity add constraint FK_brg6rwiapnpun94cua6ppc40g foreign key (BillEntity_ID) references billsplit.public.BillEntity;
+
+alter table billsplit.public.BillSetEntity_BillDelegateEntity add constraint UK_2f15i8t7u4w9hn5rbpqjl7oxy unique (billDelegates_ID);
 
 alter table billsplit.public.BillSetEntity_BillDelegateEntity add constraint FK_2f15i8t7u4w9hn5rbpqjl7oxy foreign key (billDelegates_ID) references billsplit.public.BillDelegateEntity;
 
@@ -133,21 +130,11 @@ alter table billsplit.public.BillSetEntity_UserEntity add constraint FK_3laj4gjv
 
 alter table billsplit.public.BillSetEntity_UserEntity add constraint FK_qeo4i4jkfpiw765u6ndtki9rw foreign key (BillSetEntity_id) references billsplit.public.BillSetEntity;
 
+alter table billsplit.public.BillerEntity add constraint UK_qwt90c9tre4m800nlyxg8k080 unique (name);
+
 alter table billsplit.public.BillerEntity add constraint FK_lyuq2udloswdspl8c5aojy4v foreign key (contactEntity_ID) references billsplit.public.ContactEntity;
 
-alter table billsplit.public.BillerEntity_BillEntity add constraint UK_pv19ygwnnahvel6vpyr2phrpp unique (bills_ID);
-
-alter table billsplit.public.BillerEntity_BillEntity add constraint FK_pv19ygwnnahvel6vpyr2phrpp foreign key (bills_ID) references billsplit.public.BillEntity;
-
-alter table billsplit.public.BillerEntity_BillEntity add constraint FK_c9v105cf36otwlr211d7hfdoq foreign key (BillerEntity_ID) references billsplit.public.BillerEntity;
-
 alter table billsplit.public.CategoryEntity add constraint FK_4wqh50kxaj1h15gyl3x5wb5dh foreign key (parent_ID) references billsplit.public.CategoryEntity;
-
-alter table billsplit.public.CategoryEntity_CategoryEntity add constraint UK_4xaqraclig0p0qklildsthdjl unique (children_ID);
-
-alter table billsplit.public.CategoryEntity_CategoryEntity add constraint FK_4xaqraclig0p0qklildsthdjl foreign key (children_ID) references billsplit.public.CategoryEntity;
-
-alter table billsplit.public.CategoryEntity_CategoryEntity add constraint FK_kvjqcdnvax6wmuo3f6h9hmwgj foreign key (CategoryEntity_ID) references billsplit.public.CategoryEntity;
 
 alter table billsplit.public.ContactEntity add constraint FK_1u04b90pfslsvntvefyvg8aky foreign key (contactType_ID) references billsplit.public.ContactTypeEntity;
 
@@ -157,22 +144,12 @@ alter table billsplit.public.ContactEntity_AddressLineEntity add constraint FK_m
 
 alter table billsplit.public.ContactEntity_AddressLineEntity add constraint FK_b8sbx9l0cx7jh1w5ejef6ud6a foreign key (ContactEntity_ID) references billsplit.public.ContactEntity;
 
-alter table billsplit.public.ContactEntity_PersonEntity add constraint UK_5hc3tgwtkj5hwgoaxemus70a8 unique (persons_ID);
+alter table billsplit.public.ContactEntity_ContactPersonEntity add constraint UK_k4qh7gurx5spun0cg0w8aoqol unique (persons_ID);
 
-alter table billsplit.public.ContactEntity_PersonEntity add constraint FK_5hc3tgwtkj5hwgoaxemus70a8 foreign key (persons_ID) references billsplit.public.PersonEntity;
+alter table billsplit.public.ContactEntity_ContactPersonEntity add constraint FK_k4qh7gurx5spun0cg0w8aoqol foreign key (persons_ID) references billsplit.public.ContactPersonEntity;
 
-alter table billsplit.public.ContactEntity_PersonEntity add constraint FK_3slwfaxh2jmi2rx9j2y0ahjio foreign key (ContactEntity_ID) references billsplit.public.ContactEntity;
+alter table billsplit.public.ContactEntity_ContactPersonEntity add constraint FK_cyw8f4tng03cmfpvhys7ugfm1 foreign key (ContactEntity_ID) references billsplit.public.ContactEntity;
 
-alter table billsplit.public.PersonEntity_ContactEntity add constraint UK_5wiab2pt0lb8nuo300gxs35o8 unique (contactEntities_ID);
+alter table billsplit.public.ContactPersonEntity add constraint FK_jhqmecb6g9kbfsdjufpq6ni6c foreign key (contactEntity_ID) references billsplit.public.ContactEntity;
 
-alter table billsplit.public.PersonEntity_ContactEntity add constraint FK_5wiab2pt0lb8nuo300gxs35o8 foreign key (contactEntities_ID) references billsplit.public.ContactEntity;
-
-alter table billsplit.public.PersonEntity_ContactEntity add constraint FK_bjy2lvyj9bsk7lsvh6lmy2qwo foreign key (PersonEntity_ID) references billsplit.public.PersonEntity;
-
-alter table billsplit.public.TagEntity add constraint FK_bhuqdk05uyg0k8iumtdrcykhc foreign key (parent_ID) references billsplit.public.TagEntity;
-
-alter table billsplit.public.TagEntity_TagEntity add constraint UK_ivfiyjvjyqcd1273rfdvu1kol unique (children_ID);
-
-alter table billsplit.public.TagEntity_TagEntity add constraint FK_ivfiyjvjyqcd1273rfdvu1kol foreign key (children_ID) references billsplit.public.TagEntity;
-
-alter table billsplit.public.TagEntity_TagEntity add constraint FK_f43khl2psm6x9elp74mhn7yo0 foreign key (TagEntity_ID) references billsplit.public.TagEntity
+alter table billsplit.public.TagEntity add constraint FK_bhuqdk05uyg0k8iumtdrcykhc foreign key (parent_ID) references billsplit.public.TagEntity
