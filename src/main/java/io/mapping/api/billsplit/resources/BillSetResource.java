@@ -46,14 +46,9 @@ public class BillSetResource {
 	private SessionUserProvider mSessionUserProvider;
 
 	@GET
-	@Path("/user/{userId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<BillSetEntity> getId(@PathParam("userId") final String userId) {
-		if (userId == null || userId.equals("")) {
-			return null;
-		}
-
+	public List<BillSetEntity> get() {
 		UserEntity currentUser = mSessionUserProvider.getUser(mRequest.getSession());
 		if (currentUser == null) {
 			return null;
@@ -71,7 +66,7 @@ public class BillSetResource {
 		while (billSetUserEntityIterator.hasNext()) {
 			try {
 				billSetEntities.add(em.createNamedQuery("billSetEntity.findById", BillSetEntity.class)
-						.setParameter("id", userId)
+						.setParameter("id", billSetUserEntityIterator.next().getBillSet().getId())
 						.getSingleResult());
 			} catch (NoResultException ex) {
 				/**
@@ -107,6 +102,15 @@ public class BillSetResource {
 			tx.begin();
 
 			em.persist(templateEntity);
+
+			// Flush so we can ask for the ID
+			em.flush();
+			BillSetUserEntity billSetUserEntity = new BillSetUserEntity.Builder()
+					.billSet(templateEntity)
+					.user(currentUser)
+					.build();
+
+			em.persist(billSetUserEntity);
 
 			tx.commit();
 		} catch (RuntimeException ex) {
