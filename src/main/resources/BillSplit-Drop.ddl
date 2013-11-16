@@ -11,8 +11,6 @@ alter table billsplit.public.BillSetEntity_BillEntity drop constraint FK_fvy1ctn
 alter table billsplit.public.BillSetEntity_BillEntity drop constraint FK_26o034eunfkmt2uhy3mdx8cy3;
 alter table billsplit.public.BillSetEntity_UserEntity drop constraint FK_3laj4gjvu54gqyt6xilbnkquh;
 alter table billsplit.public.BillSetEntity_UserEntity drop constraint FK_qeo4i4jkfpiw765u6ndtki9rw;
-alter table billsplit.public.BillSetUserEntity drop constraint FK_be76mi07peawnww597lheb0qy;
-alter table billsplit.public.BillSetUserEntity drop constraint FK_6bhq1tk4jk7nwe39kuqdc5m4h;
 alter table billsplit.public.BillerEntity drop constraint FK_lyuq2udloswdspl8c5aojy4v;
 alter table billsplit.public.BillerEntity_BillEntity drop constraint FK_pv19ygwnnahvel6vpyr2phrpp;
 alter table billsplit.public.BillerEntity_BillEntity drop constraint FK_c9v105cf36otwlr211d7hfdoq;
@@ -37,7 +35,6 @@ drop table if exists billsplit.public.BillSetEntity cascade;
 drop table if exists billsplit.public.BillSetEntity_BillDelegateEntity cascade;
 drop table if exists billsplit.public.BillSetEntity_BillEntity cascade;
 drop table if exists billsplit.public.BillSetEntity_UserEntity cascade;
-drop table if exists billsplit.public.BillSetUserEntity cascade;
 drop table if exists billsplit.public.BillerEntity cascade;
 drop table if exists billsplit.public.BillerEntity_BillEntity cascade;
 drop table if exists billsplit.public.CategoryEntity cascade;

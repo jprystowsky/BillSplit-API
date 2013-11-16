@@ -43,11 +43,6 @@ create table billsplit.public.BillSetEntity_UserEntity (BillSetEntity_id bytea n
   primary key (BillSetEntity_id,
                users_id));
 
-create table billsplit.public.BillSetUserEntity (id bytea not null,
-                                                 billSet_id bytea not null,
-                                                 user_id bytea not null,
-  primary key (id));
-
 create table billsplit.public.BillerEntity (ID bytea not null,
                                             name varchar(255) not null,
                                             contactEntity_ID bytea,
@@ -134,15 +129,9 @@ alter table billsplit.public.BillSetEntity_BillEntity add constraint FK_fvy1ctn6
 
 alter table billsplit.public.BillSetEntity_BillEntity add constraint FK_26o034eunfkmt2uhy3mdx8cy3 foreign key (BillSetEntity_id) references billsplit.public.BillSetEntity;
 
-alter table billsplit.public.BillSetEntity_UserEntity add constraint UK_3laj4gjvu54gqyt6xilbnkquh unique (users_id);
-
 alter table billsplit.public.BillSetEntity_UserEntity add constraint FK_3laj4gjvu54gqyt6xilbnkquh foreign key (users_id) references billsplit.public.UserEntity;
 
 alter table billsplit.public.BillSetEntity_UserEntity add constraint FK_qeo4i4jkfpiw765u6ndtki9rw foreign key (BillSetEntity_id) references billsplit.public.BillSetEntity;
-
-alter table billsplit.public.BillSetUserEntity add constraint FK_be76mi07peawnww597lheb0qy foreign key (billSet_id) references billsplit.public.BillSetEntity;
-
-alter table billsplit.public.BillSetUserEntity add constraint FK_6bhq1tk4jk7nwe39kuqdc5m4h foreign key (user_id) references billsplit.public.UserEntity;
 
 alter table billsplit.public.BillerEntity add constraint FK_lyuq2udloswdspl8c5aojy4v foreign key (contactEntity_ID) references billsplit.public.ContactEntity;
 
