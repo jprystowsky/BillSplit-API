@@ -18,43 +18,33 @@ package io.mapping.api.billsplit.entities;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
-import java.util.Collection;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.util.UUID;
 
 @Entity
-@NamedQueries({
-		@NamedQuery(name = "billSetEntity.findById", query = "from BillSetEntity where id = :id")
-})
-public class BillSetEntity {
-	private UUID mId;
-	private String name;
-	private Collection<BillEntity> mBills;
+public class ContactTypeEntity {
+	private UUID mID;
+	private String mName;
 
 	@Id
 	@GeneratedValue(generator = "uuid")
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	@Column(unique = true)
-	public UUID getId() {
-		return mId;
+	public UUID getID() {
+		return mID;
 	}
-	public void setId(UUID id) {
-		mId = id;
+	public void setID(UUID ID) {
+		mID = ID;
 	}
 
 	@Column(nullable = false)
 	public String getName() {
-		return name;
+		return mName;
 	}
 	public void setName(String name) {
-		this.name = name;
-	}
-
-	@OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-	public Collection<BillEntity> getBills() {
-		return mBills;
-	}
-	public void setBills(Collection<BillEntity> bills) {
-		mBills = bills;
+		mName = name;
 	}
 }

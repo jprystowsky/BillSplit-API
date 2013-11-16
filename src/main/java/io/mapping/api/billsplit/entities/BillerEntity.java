@@ -23,38 +23,44 @@ import java.util.Collection;
 import java.util.UUID;
 
 @Entity
-@NamedQueries({
-		@NamedQuery(name = "billSetEntity.findById", query = "from BillSetEntity where id = :id")
-})
-public class BillSetEntity {
-	private UUID mId;
-	private String name;
+public class BillerEntity {
+	private UUID mID;
+	private String mName;
 	private Collection<BillEntity> mBills;
+	private ContactEntity mContactEntity;
 
 	@Id
 	@GeneratedValue(generator = "uuid")
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	@Column(unique = true)
-	public UUID getId() {
-		return mId;
+	public UUID getID() {
+		return mID;
 	}
-	public void setId(UUID id) {
-		mId = id;
+	public void setID(UUID ID) {
+		mID = ID;
 	}
 
 	@Column(nullable = false)
 	public String getName() {
-		return name;
+		return mName;
 	}
 	public void setName(String name) {
-		this.name = name;
+		mName = name;
 	}
 
-	@OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.REMOVE)
 	public Collection<BillEntity> getBills() {
 		return mBills;
 	}
 	public void setBills(Collection<BillEntity> bills) {
 		mBills = bills;
+	}
+
+	@OneToOne(cascade = CascadeType.REMOVE)
+	public ContactEntity getContactEntity() {
+		return mContactEntity;
+	}
+	public void setContactEntity(ContactEntity contactEntity) {
+		mContactEntity = contactEntity;
 	}
 }
