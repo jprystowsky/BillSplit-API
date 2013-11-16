@@ -19,7 +19,7 @@ package io.mapping.api.billsplit.entities;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.Collection;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -27,7 +27,7 @@ public class CategoryEntity {
 	private UUID mID;
 	private String mName;
 	private CategoryEntity mParent;
-	private Collection<CategoryEntity> mChildren;
+	private Set<CategoryEntity> mChildren;
 
 	@Id
 	@GeneratedValue(generator = "uuid")
@@ -57,10 +57,10 @@ public class CategoryEntity {
 	}
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "parent", orphanRemoval = true, cascade = CascadeType.ALL)
-	public Collection<CategoryEntity> getChildren() {
+	public Set<CategoryEntity> getChildren() {
 		return mChildren;
 	}
-	public void setChildren(Collection<CategoryEntity> children) {
+	public void setChildren(Set<CategoryEntity> children) {
 		mChildren = children;
 	}
 }

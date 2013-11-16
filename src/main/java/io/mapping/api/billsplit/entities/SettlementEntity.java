@@ -19,8 +19,8 @@ package io.mapping.api.billsplit.entities;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -32,7 +32,7 @@ public class SettlementEntity {
 	private UUID mID;
 	private Date mDate;
 	private String mComments;
-	private Collection<BillEntity> mBills;
+	private Set<BillEntity> mBills;
 
 	@Id
 	@GeneratedValue(generator = "uuid")
@@ -62,10 +62,10 @@ public class SettlementEntity {
 	}
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "settlement")
-	public Collection<BillEntity> getBills() {
+	public Set<BillEntity> getBills() {
 		return mBills;
 	}
-	public void setBills(Collection<BillEntity> bills) {
+	public void setBills(Set<BillEntity> bills) {
 		mBills = bills;
 	}
 }

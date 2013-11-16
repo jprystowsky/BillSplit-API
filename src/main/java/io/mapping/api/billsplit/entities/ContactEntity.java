@@ -19,7 +19,7 @@ package io.mapping.api.billsplit.entities;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.Collection;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -30,7 +30,7 @@ import java.util.UUID;
 public class ContactEntity {
 	private UUID mID;
 
-	private Collection<AddressLineEntity> mAddressLines;
+	private Set<AddressLineEntity> mAddressLines;
 	private String mCity;
 	private String mState;
 	private String mZipCode;
@@ -39,7 +39,7 @@ public class ContactEntity {
 
 	private String mWebsite;
 
-	private Collection<ContactPersonEntity> mPersons;
+	private Set<ContactPersonEntity> mPersons;
 
 	private ContactTypeEntity mContactType;
 
@@ -55,10 +55,10 @@ public class ContactEntity {
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	public Collection<AddressLineEntity> getAddressLines() {
+	public Set<AddressLineEntity> getAddressLines() {
 		return mAddressLines;
 	}
-	public void setAddressLines(Collection<AddressLineEntity> addressLines) {
+	public void setAddressLines(Set<AddressLineEntity> addressLines) {
 		mAddressLines = addressLines;
 	}
 
@@ -103,10 +103,10 @@ public class ContactEntity {
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-	public Collection<ContactPersonEntity> getPersons() {
+	public Set<ContactPersonEntity> getPersons() {
 		return mPersons;
 	}
-	public void setPersons(Collection<ContactPersonEntity> persons) {
+	public void setPersons(Set<ContactPersonEntity> persons) {
 		mPersons = persons;
 	}
 

@@ -19,7 +19,7 @@ package io.mapping.api.billsplit.entities;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.Collection;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -30,7 +30,7 @@ import java.util.UUID;
 public class BillerEntity {
 	private UUID mID;
 	private String mName;
-	private Collection<BillEntity> mBills;
+	private Set<BillEntity> mBills;
 	private ContactEntity mContactEntity;
 
 	@Id
@@ -53,10 +53,10 @@ public class BillerEntity {
 	}
 
 	@OneToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, fetch = FetchType.EAGER, mappedBy = "biller")
-	public Collection<BillEntity> getBills() {
+	public Set<BillEntity> getBills() {
 		return mBills;
 	}
-	public void setBills(Collection<BillEntity> bills) {
+	public void setBills(Set<BillEntity> bills) {
 		mBills = bills;
 	}
 
