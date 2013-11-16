@@ -28,7 +28,8 @@ import java.util.UUID;
 
 @Entity
 @NamedQueries({
-		@NamedQuery(name = "billSetEntity.findById", query = "from BillSetEntity where id = :id")
+		@NamedQuery(name = "billSetEntity.findById", query = "from BillSetEntity where id = :id"),
+		@NamedQuery(name = "billSetEntity.findByUserId", query = "from BillSetEntity bse join bse.users u where u.id = :id")
 })
 public class BillSetEntity {
 	private UUID mId;
