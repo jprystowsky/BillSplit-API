@@ -20,63 +20,52 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Date;
 import java.util.UUID;
 
 /**
- * A set of bills, the users of those bills, and the delegates of those bills.
+ * The settlement, i.e., resolution, of a set of bills.
  */
 
 @Entity
-@NamedQueries({
-		@NamedQuery(name = "billSetEntity.findById", query = "from BillSetEntity where id = :id")
-})
-public class BillSetEntity {
-	private UUID mId;
-	private String name;
+public class SettlementEntity {
+	private UUID mID;
+	private Date mDate;
+	private String mComments;
 	private Collection<BillEntity> mBills;
-	private Collection<UserEntity> mUsers;
-	private Collection<BillDelegateEntity> mBillDelegates;
 
 	@Id
 	@GeneratedValue(generator = "uuid")
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	@Column(unique = true, nullable = false)
-	public UUID getId() {
-		return mId;
+	public UUID getID() {
+		return mID;
 	}
-	public void setId(UUID id) {
-		mId = id;
+	public void setID(UUID ID) {
+		mID = ID;
 	}
 
+	@Temporal(TemporalType.DATE)
 	@Column(nullable = false)
-	public String getName() {
-		return name;
+	public Date getDate() {
+		return mDate;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setDate(Date date) {
+		mDate = date;
 	}
 
-	@OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+	public String getComments() {
+		return mComments;
+	}
+	public void setComments(String comments) {
+		mComments = comments;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "settlement")
 	public Collection<BillEntity> getBills() {
 		return mBills;
 	}
 	public void setBills(Collection<BillEntity> bills) {
 		mBills = bills;
-	}
-
-	@OneToMany(fetch = FetchType.LAZY)
-	public Collection<UserEntity> getUsers() {
-		return mUsers;
-	}
-	public void setUsers(Collection<UserEntity> users) {
-		mUsers = users;
-	}
-
-	@ManyToMany(fetch = FetchType.LAZY)
-	public Collection<BillDelegateEntity> getBillDelegates() {
-		return mBillDelegates;
-	}
-	public void setBillDelegates(Collection<BillDelegateEntity> billDelegates) {
-		mBillDelegates = billDelegates;
 	}
 }

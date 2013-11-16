@@ -33,6 +33,7 @@ public class BillEntity {
 	private Collection<TagEntity> mTags;
 	private CategoryEntity mCategory;
 	private String mNotes;
+	private SettlementEntity mSettlement;
 
 	@Id
 	@GeneratedValue(generator = "uuid")
@@ -91,5 +92,13 @@ public class BillEntity {
 	}
 	public void setNotes(String notes) {
 		mNotes = notes;
+	}
+
+	@OneToOne(cascade = CascadeType.REMOVE)
+	public SettlementEntity getSettlement() {
+		return mSettlement;
+	}
+	public void setSettlement(SettlementEntity settlement) {
+		mSettlement = settlement;
 	}
 }
