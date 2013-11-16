@@ -29,13 +29,19 @@ create table billsplit.public.BillSetEntity (id bytea not null,
   primary key (id));
 
 create table billsplit.public.BillSetEntity_BillDelegateEntity (BillSetEntity_id bytea not null,
-                                                                billDelegates_ID bytea not null);
+                                                                billDelegates_ID bytea not null,
+  primary key (BillSetEntity_id,
+               billDelegates_ID));
 
 create table billsplit.public.BillSetEntity_BillEntity (BillSetEntity_id bytea not null,
-                                                        bills_ID bytea not null);
+                                                        bills_ID bytea not null,
+  primary key (BillSetEntity_id,
+               bills_ID));
 
 create table billsplit.public.BillSetEntity_UserEntity (BillSetEntity_id bytea not null,
-                                                        users_id bytea not null);
+                                                        users_id bytea not null,
+  primary key (BillSetEntity_id,
+               users_id));
 
 create table billsplit.public.BillSetUserEntity (id bytea not null,
                                                  billSet_id bytea not null,
